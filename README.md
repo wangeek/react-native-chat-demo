@@ -22,6 +22,14 @@
      "NIM_KEY": ""//云信appId
   ]
  ```
+
+### 4.启动调试
+#### 4.1 Windows Android
+- 安装 Android Studio, 参考 [http://facebook.github.io/react-native/docs/getting-started.html#android-development-environment](http://facebook.github.io/react-native/docs/getting-started.html#android-development-environment)
+- npm install -g react-native-cli
+- 连接 Android 设备并打开调试模式
+- 在程序目录下运行 react-native run-android
+
 ## 截图
 
 |会话列表|消息|表输入|
