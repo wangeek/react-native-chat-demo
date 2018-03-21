@@ -8,11 +8,14 @@ import {
     TouchableOpacity,
     Dimensions,
     ListView,
-    NativeAppEventEmitter
+    NativeAppEventEmitter,
+    AsyncStorage,
+    Alert
 } from 'react-native';
 import {Container,Content,Left,Right,Title,ListItem,List,Header,Icon,Text as TextNB,Button} from 'native-base';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import {NimSession} from 'react-native-netease-im';
+import Toast from 'react-native-simple-toast';
 
 export default class ChatList extends Component {
     static navigatorStyle = {
@@ -25,6 +28,10 @@ export default class ChatList extends Component {
     };
     static navigatorButtons = {
         rightButtons: [
+            {
+                title: '注销',
+                id:'logout'
+            },
             {
                 title: '朋友',
                 id:'firends'
@@ -59,6 +66,17 @@ export default class ChatList extends Component {
                 navigator.showModal({
                     screen:"ImDemo.CreateTeam",
                     title:'创建群'
+                });
+            }
+        }
+        if (event.type === 'NavBarButtonPress') {
+            if (event.id === 'logout') {
+                AsyncStorage.multiRemove(['name', 'token']).then(()=>{
+                    navigator.resetTo({
+                        screen: 'ImDemo.Login',
+                        navigatorStyle: {navBarHidden: true}
+                    });
+                    Toast.show('已退出登录！')
                 });
             }
         }

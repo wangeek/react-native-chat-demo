@@ -23,7 +23,8 @@ export default class Login extends Component {
             if (!err) {
                 if (data[0][1]) {
                     token = data[0][1];
-                    global.imaccount = this.state.name;
+                    global.imaccount = data[1][1];
+                    this.setState({name:data[1][1], password:'********'});
                     NimSession.login(data[1][1], token).then((data) => {
                         global.imaccount = data[1][1];
                         navigator.resetTo({
