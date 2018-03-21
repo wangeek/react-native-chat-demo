@@ -19,12 +19,11 @@ export default class Login extends Component {
     componentWillMount() {
         const { navigator } = this.props;
         var token;
-        AsyncStorage.multiGet(['password', 'name'], (err, data) => {
+        AsyncStorage.multiGet(['token', 'name'], (err, data) => {
             if (!err) {
                 if (data[0][1]) {
-                    token = md5.createHash(data[0][1]);
+                    token = data[0][1];
                     global.imaccount = this.state.name;
-
                     NimSession.login(data[1][1], token).then((data) => {
                         global.imaccount = data[1][1];
                         navigator.resetTo({
@@ -52,7 +51,7 @@ export default class Login extends Component {
             global.imaccount = this.state.name;
             //本地保存用户登录状态
             AsyncStorage.multiSet([
-                ['password', this.state.password],
+                ['token', md5.createHash(this.state.password)],
                 ['name', this.state.name]
             ]);
             navigator.resetTo({
