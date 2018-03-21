@@ -97,7 +97,7 @@ android {
         }
         multiDexEnabled true
         manifestPlaceholders = [
-           "NIM_KEY": "8cafb31bb1c3750349340dec765df1c5"//云信appId
+           "NIM_KEY": "45c6af3c98409b18a84451215d0bdd6e"//云信appId
         ]
     }
     dexOptions {//添加dex编译设置

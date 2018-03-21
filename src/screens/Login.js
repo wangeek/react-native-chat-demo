@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View,Image,TextInput,StyleSheet,Text,Dimensions} from 'react-native';
+import { View,Image,TextInput,StyleSheet,Text,Dimensions,AsyncStorage} from 'react-native';
 import { Container, Content, Button, Icon,ListItem,Left,Right } from 'native-base';
 import {NimSession} from 'react-native-netease-im';
 import md5 from '../utils/md5';
@@ -15,6 +15,32 @@ export default class Login extends Component {
             password: ''
         };
     }
+
+    componentWillMount() {
+        const { navigator } = this.props;
+        var token;
+        AsyncStorage.multiGet(['password', 'name'], (err, data) => {
+            if (!err) {
+                if (data[0][1]) {
+                    token = md5.createHash(data[0][1]);
+                    global.imaccount = this.state.name;
+
+                    NimSession.login(data[1][1], token).then((data) => {
+                        global.imaccount = data[1][1];
+                        navigator.resetTo({
+                            screen: 'ImDemo.ChatList',
+                            title: "消息"
+                        });
+                    })
+                }
+            } 
+            else {
+                console.warn(err);
+            }
+            }
+        )
+    }
+    
     componentWillUnmount() {
         //清除密码
         this.setState({password: ''});
@@ -24,6 +50,11 @@ export default class Login extends Component {
         const {navigator} = this.props;
         NimSession.login(this.state.name,md5.createHash(this.state.password)).then((data)=>{
             global.imaccount = this.state.name;
+            //本地保存用户登录状态
+            AsyncStorage.multiSet([
+                ['password', this.state.password],
+                ['name', this.state.name]
+            ]);
             navigator.resetTo({
                 screen:'ImDemo.ChatList',
                 title:"消息"
@@ -35,6 +66,7 @@ export default class Login extends Component {
     _renderContent(){
         return (
             <View style={styles.content}>
+                <Text style={styles.bigText}>IM即时通讯</Text>
                 <View style={[styles.inputView,{borderTopWidth:borderWidth,borderTopColor:'#ccc'}]}>
                     <Text style={styles.inputLabel}>账户</Text>
                     <TextInput
@@ -97,7 +129,10 @@ const styles = StyleSheet.create({
     bottom: {
         padding:12
     },
-
+    bigText:{
+        fontSize: 22,
+        textAlign: 'center'
+    },
     inputView: {
         backgroundColor: '#fff',
         flexDirection: 'row',
